@@ -3,6 +3,7 @@ import { Card, Textarea, Select, Option, Button, Tooltip } from '@mui/joy'
 import { usePageData } from '../../context/page-data/page-data.context'
 import { CardActions } from '@mui/material'
 import Box from '@mui/joy/Box'
+import Image from '../../components/Image'
 
 const themeBackgrounds: Record<string, string> = {
     red: '/src/assets/red_left.png',
@@ -21,74 +22,68 @@ export default function CreateBanner() {
     return (
         <Card
             sx={{
-                height: 'auto',
+                position: 'relative',
+                height: { xs: 300, sm: 400, md: 500, lg: 600 },
                 maxWidth: 1400,
                 mx: 'auto',
-                pt: 10,
-                px: 5,
-                backgroundImage: selectedTheme ? `url(${themeBackgrounds[selectedTheme]})` : 'none',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                transition: 'background 0.3s ease-in-out',
+                overflow: 'hidden',
             }}
         >
+            {selectedTheme && (
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        zIndex: 0,
+                    }}
+                >
+                    <Image url={themeBackgrounds[selectedTheme]} />
+                </Box>
+            )}
             <Box
                 sx={{
+                    position: 'absolute',
+                    top: { xs: '40%', sm: '50%' },
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
                     display: 'flex',
-                    flexDirection: { xs: 'column', md: 'row' },
-                    gap: { xs: 2, md: 35 },
-                    alignItems: { xs: 'center', md: 'flex-start' },
-                    flexWrap: 'wrap',
-                    mt: { xs: 2, md: 10 },
+                    flexDirection: 'column',
+                    gap: 1.5,
+                    width: { xs: '85%', sm: '60%', md: '50%' },
+                    zIndex: 1,
                 }}
             >
-                <Box sx={{ flex: 1, minWidth: 200 }}>
-                    <Tooltip
-                        title="Enter your brand name."
-                        placement="right"
-                    >
-                        <Textarea
-                            placeholder="Brand Name"
-                            sx={{ width: { xs: '100%', md: 200 } }}
-                        />
-                    </Tooltip>
-                    <Tooltip
-                        title="Enter your slogan."
-                        placement="right"
-                    >
-                        <Textarea
-                            placeholder="Slogan"
-                            sx={{ width: { xs: '100%', md: 200 }, mt: 1 }}
-                        />
-                    </Tooltip>
-                </Box>
-
-                <Box sx={{ flex: 1, minWidth: 200 }}>
-                    <Tooltip
-                        title="Enter your text here."
-                        placement="right"
-                    >
-                        <Textarea
-                            placeholder="Primary Text"
-                            sx={{ width: { xs: '100%', md: 200 } }}
-                        />
-                    </Tooltip>
-                    <Tooltip
-                        title="Enter your other text here."
-                        placement="right"
-                    >
-                        <Textarea
-                            placeholder="Secondary Text"
-                            sx={{ width: { xs: '100%', md: 200 }, mt: 1 }}
-                        />
-                    </Tooltip>
-                </Box>
+                <Tooltip
+                    title="This will be displayed in the middle of the background."
+                    placement="top"
+                >
+                    <Textarea
+                        placeholder="Primary Text"
+                        sx={{ width: '100%' }}
+                    />
+                </Tooltip>
+                <Tooltip
+                    title="This will be displayed below the primary text."
+                    placement="bottom"
+                >
+                    <Textarea
+                        placeholder="Secondary Text"
+                        sx={{ width: '100%' }}
+                    />
+                </Tooltip>
             </Box>
             <CardActions
                 sx={{
+                    position: 'absolute',
+                    bottom: { xs: 10, sm: 20 },
+                    left: '50%',
+                    transform: 'translateX(-50%)',
                     display: 'flex',
-                    justifyContent: { xs: 'center', md: 'flex-end', lg: 'space-between' },
-                    mt: 3,
+                    gap: 2,
+                    zIndex: 1,
                 }}
             >
                 <Select
@@ -104,7 +99,7 @@ export default function CreateBanner() {
                     variant="solid"
                     size="md"
                     color="primary"
-                    sx={{ maxWidth: '75%', fontWeight: 600 }}
+                    sx={{ fontWeight: 600 }}
                 >
                     Create
                 </Button>
