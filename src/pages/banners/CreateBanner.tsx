@@ -4,6 +4,8 @@ import { usePageData } from '../../context/page-data/page-data.context'
 import { CardActions } from '@mui/material'
 import Box from '@mui/joy/Box'
 import Image from '../../components/Image'
+import BannerService from '../../services/banner.service'
+import { useNavigate } from 'react-router-dom'
 
 const themeBackgrounds: Record<string, string> = {
     red: '/src/assets/red_left.png',
@@ -14,10 +16,31 @@ const themeBackgrounds: Record<string, string> = {
 export default function CreateBanner() {
     const { setPageData } = usePageData()
     const [selectedTheme, setSelectedTheme] = useState<string | null>(null)
+    const [primaryText, setPrimaryText] = useState('')
+    const [secondaryText, setSecondaryText] = useState('')
+    const [error, setError] = useState<string | null>(null)
+    const navigate = useNavigate()
 
     useEffect(() => {
         setPageData({ title: 'Create Banner' })
     }, [setPageData])
+
+    const handleCreateBanner = () => {
+        if (!primaryText.trim() || !secondaryText.trim() || !selectedTheme) {
+            setError('Please fill in all fields.')
+            return
+        }
+
+        const newBanner = {
+            id: Date.now().toString(),
+            link: '#',
+            imageUrl: themeBackgrounds[selectedTheme],
+        }
+
+        BannerService.createBanner(newBanner)
+        setError(null)
+        navigate('/banners')
+    }
 
     return (
         <Card
@@ -63,6 +86,9 @@ export default function CreateBanner() {
                     <Textarea
                         placeholder="Primary Text"
                         sx={{ width: '100%' }}
+                        value={primaryText}
+                        onChange={(e) => setPrimaryText(e.target.value)}
+                        required
                     />
                 </Tooltip>
                 <Tooltip
@@ -72,6 +98,9 @@ export default function CreateBanner() {
                     <Textarea
                         placeholder="Secondary Text"
                         sx={{ width: '100%' }}
+                        value={secondaryText}
+                        onChange={(e) => setSecondaryText(e.target.value)}
+                        required
                     />
                 </Tooltip>
             </Box>
@@ -90,6 +119,7 @@ export default function CreateBanner() {
                     sx={{ maxWidth: 150 }}
                     placeholder="Theme.."
                     onChange={(_, value) => setSelectedTheme(value)}
+                    required
                 >
                     <Option value="red">Red</Option>
                     <Option value="cyan">Cyan</Option>
@@ -100,10 +130,27 @@ export default function CreateBanner() {
                     size="md"
                     color="primary"
                     sx={{ fontWeight: 600 }}
+                    // onClick={handleCreateBanner}
+                    // todo: fix infinite duplication of banner
                 >
                     Create
                 </Button>
             </CardActions>
+            {error && (
+                <Box
+                    sx={{
+                        color: 'red',
+                        textAlign: 'center',
+                        position: 'absolute',
+                        bottom: 5,
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        mb: '55px',
+                    }}
+                >
+                    {error}
+                </Box>
+            )}
         </Card>
     )
 }
