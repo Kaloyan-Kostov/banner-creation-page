@@ -130,8 +130,7 @@ export default function CreateBanner() {
                     size="md"
                     color="primary"
                     sx={{ fontWeight: 600 }}
-                    // onClick={handleCreateBanner}
-                    // todo: fix infinite duplication of banner
+                    onClick={handleCreateBanner}
                 >
                     Create
                 </Button>

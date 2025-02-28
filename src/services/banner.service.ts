@@ -7,9 +7,9 @@ class BannerService {
 
     async createBanner(banner: BannerDto) {
         const banners = this.listBanners()
-        banner.id = Date.now().toString()
         banners.unshift(banner)
-        this.saveBanners([banner, ...this.listBanners()])
+        this.saveBanners(banners)
+        //todo: check old this.saveBanners([banner,...this.listBanners()])
     }
 
     async getBanners(page: PageRequest) {

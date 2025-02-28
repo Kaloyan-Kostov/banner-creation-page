@@ -31,15 +31,21 @@ export default function ScrollableCards<T>(props: {
         if (!newCards) {
             return
         }
-        let currentCards = [...cards]
         setPage(newCards.pageNumber)
         setHasMore(newCards.maxPageNumber > newCards.pageNumber)
         const newElements = newCards.content.map((value) => props.mapCard(value, deleteItem))
-        setCards([...currentCards, ...newElements])
-    }, [cards, page, deleteItem, props])
+        setCards((prevCards) => {
+            const existingIds = new Set(prevCards.map((card) => card.key))
+            const filteredNewElements = newElements.filter((card) => !existingIds.has(card.key))
+            return [...filteredNewElements, ...prevCards].slice(0, 12)
+        })
+    }, [page, deleteItem, props])
+    //todo: check old loadBanners again
 
     useEffect(() => {
-        if (page != 0) return
+        if (page != 0) {
+            return
+        }
         loadBanners().catch((reason) => console.error(reason))
     }, [loadBanners, page])
 
