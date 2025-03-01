@@ -6,6 +6,7 @@ import Box from '@mui/joy/Box'
 import Image from '../../components/Image'
 import BannerService from '../../services/banner.service'
 import { useNavigate } from 'react-router-dom'
+import { BannerDto } from '../../services/dto/banner.dto'
 
 const themeBackgrounds: Record<string, string> = {
     red: '/src/assets/banner.svg',
@@ -31,7 +32,7 @@ export default function CreateBanner() {
             return
         }
 
-        const newBanner = {
+        const newBanner: BannerDto = {
             id: Date.now().toString(),
             link: JSON.stringify({ primaryText, secondaryText }),
             imageUrl: themeBackgrounds[selectedTheme],

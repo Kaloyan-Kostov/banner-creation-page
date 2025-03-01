@@ -5,10 +5,16 @@ import IconButton from '@mui/joy/IconButton'
 import { Delete } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import Image from '../Image.tsx'
+import BannerService from '../../services/banner.service.ts'
 
 export default function BannerCard(props: { banner?: BannerDto; delete?: () => void }) {
     const navigate = useNavigate()
     let textData = { primaryText: '', secondaryText: '' }
+
+    const handleDeleteBanner = (id: string) => {
+        BannerService.deleteBanner(id)
+        props.delete?.()
+    }
 
     try {
         if (props.banner?.link?.startsWith('{')) {
@@ -75,7 +81,7 @@ export default function BannerCard(props: { banner?: BannerDto; delete?: () => v
                         variant="outlined"
                         size="sm"
                         sx={{ width: '20%', alignSelf: 'center' }}
-                        onClick={props.delete}
+                        onClick={() => props.banner && handleDeleteBanner()}
                     >
                         <Delete />
                     </IconButton>
