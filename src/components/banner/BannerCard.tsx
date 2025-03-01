@@ -8,58 +8,80 @@ import Image from '../Image.tsx'
 
 export default function BannerCard(props: { banner?: BannerDto; delete?: () => void }) {
     const navigate = useNavigate()
+    let textData = { primaryText: '', secondaryText: '' }
+
+    try {
+        if (props.banner?.link?.startsWith('{')) {
+            textData = JSON.parse(props.banner.link)
+        } else {
+            textData = { primaryText: props.banner?.link || '', secondaryText: '' }
+        }
+    } catch (e) {
+        console.log('Invalid text data in banner', e)
+    }
 
     return (
-        <Grid
-            xl={3}
-            lg={4}
-            md={6}
-            sm={6}
-            xs={12}
-        >
-            <Card sx={{ height: 400 }}>
-                <CardOverflow>
+        <Grid>
+            <Card
+                sx={{
+                    width: '100%',
+                    maxWidth: 350,
+                    height: 'auto',
+                    minHeight: 400,
+                    position: 'relative',
+                    overflow: 'hidden',
+                    textAlign: 'center',
+                }}
+            >
+                <CardOverflow sx={{ mt: 0.5 }}>
                     <Image url={props.banner?.imageUrl} />
                 </CardOverflow>
-                <Box>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            gap: 2,
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                        }}
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: { xs: '65%', sm: '65%', md: '65%', lg: '65%' },
+                        left: '65%',
+                        transform: 'translate(-50%, -50%)',
+                        color: '#fff',
+                        zIndex: 1,
+                        width: '80%',
+                    }}
+                >
+                    <Typography
+                        level="title-lg"
+                        sx={{ wordWrap: 'break-word' }}
                     >
-                        <Typography
-                            level="title-lg"
-                            sx={{
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap',
-                                width: '100%',
-                            }}
+                        <Skeleton
+                            loading={!props.banner}
+                            variant="text"
                         >
-                            <Skeleton
-                                loading={!props.banner}
-                                variant="text"
-                                sx={{ width: '100%', height: '100%' }}
-                            >
-                                {props.banner?.link}
-                            </Skeleton>
-                        </Typography>
-                    </Box>
+                            {textData.primaryText}
+                        </Skeleton>
+                    </Typography>
+                    <Typography
+                        level="body-sm"
+                        sx={{ mt: 1, wordWrap: 'break-word', fontSize: '0.8rem' }}
+                    >
+                        <Skeleton
+                            loading={!props.banner}
+                            variant="text"
+                        >
+                            {textData.secondaryText}
+                        </Skeleton>
+                    </Typography>
                 </Box>
                 <CardActions>
                     <IconButton
                         variant="outlined"
                         size="sm"
                         sx={{ width: '20%', alignSelf: 'center' }}
+                        onClick={props.delete}
                     >
                         <Delete />
                     </IconButton>
                     <Button
                         variant="solid"
-                        type={'button'}
+                        type="button"
                         size="md"
                         onClick={() => navigate({ pathname: `/landmarks/${props.banner!.id}` })}
                         color="primary"

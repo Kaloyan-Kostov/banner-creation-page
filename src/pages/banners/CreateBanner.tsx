@@ -8,9 +8,9 @@ import BannerService from '../../services/banner.service'
 import { useNavigate } from 'react-router-dom'
 
 const themeBackgrounds: Record<string, string> = {
-    red: '/src/assets/red_left.png',
-    cyan: '/src/assets/cyan_left.png',
-    purple: '/src/assets/purple_left.png',
+    red: '/src/assets/banner.svg',
+    cyan: '/src/assets/banner2.svg',
+    purple: '/src/assets/banner3.svg',
 }
 
 export default function CreateBanner() {
@@ -33,7 +33,7 @@ export default function CreateBanner() {
 
         const newBanner = {
             id: Date.now().toString(),
-            link: '#',
+            link: JSON.stringify({ primaryText, secondaryText }),
             imageUrl: themeBackgrounds[selectedTheme],
         }
 
@@ -46,8 +46,9 @@ export default function CreateBanner() {
         <Card
             sx={{
                 position: 'relative',
-                height: { xs: 300, sm: 400, md: 500, lg: 600 },
-                maxWidth: 1400,
+                height: { xs: 700, sm: 400, md: 500, lg: 600 },
+                width: { xs: 330 },
+                maxWidth: 350,
                 mx: 'auto',
                 overflow: 'hidden',
             }}
@@ -69,30 +70,30 @@ export default function CreateBanner() {
             <Box
                 sx={{
                     position: 'absolute',
-                    top: { xs: '40%', sm: '50%' },
-                    left: '50%',
+                    top: { xs: '67%', sm: '72%' },
+                    left: '65%',
                     transform: 'translate(-50%, -50%)',
                     display: 'flex',
                     flexDirection: 'column',
                     gap: 1.5,
-                    width: { xs: '85%', sm: '60%', md: '50%' },
+                    width: { xs: '50%', sm: '42%', md: '50%' },
                     zIndex: 1,
                 }}
             >
                 <Tooltip
-                    title="This will be displayed in the middle of the background."
+                    title="Here goes your UPPERCASE text."
                     placement="top"
                 >
                     <Textarea
                         placeholder="Primary Text"
                         sx={{ width: '100%' }}
                         value={primaryText}
-                        onChange={(e) => setPrimaryText(e.target.value)}
+                        onChange={(e) => setPrimaryText(e.target.value.slice(0, 20))}
                         required
                     />
                 </Tooltip>
                 <Tooltip
-                    title="This will be displayed below the primary text."
+                    title="This is the text below the primary."
                     placement="bottom"
                 >
                     <Textarea

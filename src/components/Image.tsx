@@ -1,25 +1,22 @@
-import { AspectRatio, Skeleton } from '@mui/joy'
+import { Skeleton } from '@mui/joy'
 import { useEffect, useState } from 'react'
+import Box from '@mui/joy/Box'
 import ImageService from '../services/image.service.ts'
 
-export default function Image(props: {
-    url?: string
-}) {
+export default function Image(props: { url?: string }) {
     const [isLoaded, setIsLoaded] = useState(false)
     const [imageSrc, setImageSrc] = useState<string>()
 
     useEffect(() => {
         if (props.url) {
-            ImageService.fetchImage(props.url)
-                .then((value) => {
-                        if (value) {
-                            setImageSrc(value)
-                            setIsLoaded(true)
-                        }
-                    },
-                )
+            ImageService.fetchImage(props.url).then((value) => {
+                if (value) {
+                    setImageSrc(value)
+                    setIsLoaded(true)
+                }
+            })
         }
-    }, [props])
+    }, [props.url])
 
     useEffect(() => {
         if (imageSrc) {
@@ -28,9 +25,14 @@ export default function Image(props: {
     }, [imageSrc])
 
     return (
-        <AspectRatio
-            ratio="2"
-            objectFit="cover"
+        <Box
+            sx={{
+                width: '100%',
+                height: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+            }}
         >
             <Skeleton
                 loading={!isLoaded}
@@ -41,18 +43,15 @@ export default function Image(props: {
                     srcSet={`${imageSrc} 2x`}
                     style={{
                         ...(isLoaded ? {} : { visibility: 'hidden' }),
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
                         width: '100%',
                         height: '100%',
-                        objectFit: 'cover',
+                        objectFit: 'contain',
                         objectPosition: 'center',
                     }}
                     alt="Banner"
                     onLoad={() => setIsLoaded(true)}
                 />
             </Skeleton>
-        </AspectRatio>
+        </Box>
     )
 }
