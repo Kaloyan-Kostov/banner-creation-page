@@ -6,9 +6,12 @@ import { Delete } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import Image from '../Image.tsx'
 import BannerService from '../../services/banner.service.ts'
+import { useState } from 'react'
+import ConfirmModal from '../ConfirmModal.tsx'
 
 export default function BannerCard(props: { banner?: BannerDto; delete?: () => void }) {
     const navigate = useNavigate()
+    const [openConfirm, setOpenConfirm] = useState(false)
     let textData = { primaryText: '', secondaryText: '' }
 
     const handleDeleteBanner = (id: string) => {
@@ -81,7 +84,7 @@ export default function BannerCard(props: { banner?: BannerDto; delete?: () => v
                         variant="outlined"
                         size="sm"
                         sx={{ width: '20%', alignSelf: 'center' }}
-                        onClick={() => props.banner && handleDeleteBanner()}
+                        onClick={() => setOpenConfirm(true)}
                     >
                         <Delete />
                     </IconButton>
@@ -97,6 +100,15 @@ export default function BannerCard(props: { banner?: BannerDto; delete?: () => v
                     </Button>
                 </CardActions>
             </Card>
+            <ConfirmModal
+                open={openConfirm}
+                onClose={() => setOpenConfirm(false)}
+                action="delete this banner"
+                confirm={() => {
+                    handleDeleteBanner()
+                    setOpenConfirm(false)
+                }}
+            />
         </Grid>
     )
 }
