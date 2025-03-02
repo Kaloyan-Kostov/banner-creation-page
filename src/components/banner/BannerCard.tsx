@@ -62,7 +62,7 @@ export default function BannerCard(props: { banner?: BannerDto; delete?: () => v
                     </Typography>
                     <Typography
                         level="body-sm"
-                        sx={{ mt: 1, wordWrap: 'break-word', fontSize: '0.8rem' }}
+                        sx={{ px: 7, wordWrap: 'break-word', fontSize: '0.8rem' }}
                     >
                         <Skeleton
                             loading={!props.banner}
