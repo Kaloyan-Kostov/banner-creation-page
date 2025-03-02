@@ -10,9 +10,10 @@ export default function ScrollableCards<T>(props: {
     skeletonMap: (_: any, index: number) => React.JSX.Element
 }) {
     const initial = [...Array(12)].map(props.skeletonMap)
-    const [cards, setCards] = useState<React.JSX.Element[]>(initial)
+    const [cards, setCards] = useState<React.JSX.Element[]>([])
     const [page, setPage] = useState<number>(0)
     const [hasMore, setHasMore] = useState<boolean>(true)
+    const PAGE_SIZE = 12
 
     const deleteItem = useCallback((id: string) => {
         setCards((prevCardsState) => {
@@ -27,27 +28,32 @@ export default function ScrollableCards<T>(props: {
     }, [])
 
     const loadBanners = useCallback(async () => {
-        const newCards = await props.loadMore({ page, pageSize: 12 })
+        console.log('CURR PAGE: ' + Math.ceil(cards.length / PAGE_SIZE))
+        const newCards = await props.loadMore({
+            page: Math.ceil(cards.length / PAGE_SIZE),
+            pageSize: PAGE_SIZE,
+        })
+
         if (!newCards) {
             return
         }
         setPage(newCards.pageNumber)
-        setHasMore(newCards.maxPageNumber > newCards.pageNumber)
+        setHasMore(newCards.maxPageNumber > newCards.pageNumber + 1)
         const newElements = newCards.content.map((value) => props.mapCard(value, deleteItem))
+
         setCards((prevCards) => {
             const existingIds = new Set(prevCards.map((card) => card.key))
             const filteredNewElements = newElements.filter((card) => !existingIds.has(card.key))
-            return [...filteredNewElements, ...prevCards].slice(0, 12)
+            return [...prevCards, ...filteredNewElements]
         })
     }, [page, deleteItem, props])
-    //todo: check old loadBanners again
 
     useEffect(() => {
         if (page != 0) {
             return
         }
         loadBanners().catch((reason) => console.error(reason))
-    }, [loadBanners, page])
+    }, [])
 
     const loadMore = () => {
         loadBanners().catch((reason) => console.error(reason))
@@ -70,7 +76,7 @@ export default function ScrollableCards<T>(props: {
                     </p>
                 }
             >
-                {...cards}
+                {cards.length > 0 ? [...cards] : [...initial]}
             </InfiniteScroll>
         </Grid>
     )

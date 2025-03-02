@@ -16,8 +16,6 @@ class BannerService {
         if (!page.page) page.page = 0
         if (!page.pageSize) page.pageSize = 12
         let banners = this.listBanners()
-        console.log('loading banners:', banners)
-
         const total = banners.length
         banners = banners.slice(page.page * page.pageSize, (page.page + 1) * page.pageSize)
         if (page.orderBy) {
