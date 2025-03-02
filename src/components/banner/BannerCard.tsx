@@ -12,21 +12,14 @@ import ConfirmModal from '../ConfirmModal.tsx'
 export default function BannerCard(props: { banner?: BannerDto; delete?: () => void }) {
     const navigate = useNavigate()
     const [openConfirm, setOpenConfirm] = useState(false)
-    let textData = { primaryText: '', secondaryText: '' }
+    const textData = {
+        primaryText: props.banner?.primaryText || '',
+        secondaryText: props.banner?.secondaryText || '',
+    }
 
     const handleDeleteBanner = (id: string) => {
         BannerService.deleteBanner(id)
         props.delete?.()
-    }
-
-    try {
-        if (props.banner?.link?.startsWith('{')) {
-            textData = JSON.parse(props.banner.link)
-        } else {
-            textData = { primaryText: props.banner?.link || '', secondaryText: '' }
-        }
-    } catch (e) {
-        console.log('Invalid text data in banner', e)
     }
 
     return (
@@ -92,7 +85,7 @@ export default function BannerCard(props: { banner?: BannerDto; delete?: () => v
                         variant="solid"
                         type="button"
                         size="md"
-                        onClick={() => navigate({ pathname: `/landmarks/${props.banner!.id}` })}
+                        onClick={() => navigate({ pathname: `/banners/edit/${props.banner!.id}` })}
                         color="primary"
                         sx={{ width: '75%', alignSelf: 'center', fontWeight: 600 }}
                     >

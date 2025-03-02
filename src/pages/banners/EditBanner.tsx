@@ -5,7 +5,7 @@ import { CardActions } from '@mui/material'
 import Box from '@mui/joy/Box'
 import Image from '../../components/Image'
 import BannerService from '../../services/banner.service'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { BannerDto } from '../../services/dto/banner.dto'
 
 const themeBackgrounds: Record<string, string> = {
@@ -14,8 +14,9 @@ const themeBackgrounds: Record<string, string> = {
     purple: '/src/assets/banner3.svg',
 }
 
-export default function CreateBanner() {
+export default function EditBanner(props: { onBannerUpdated?: () => void }) {
     const { setPageData } = usePageData()
+    const { id } = useParams<{ id: string }>()
     const [selectedTheme, setSelectedTheme] = useState<string | null>(null)
     const [primaryText, setPrimaryText] = useState('')
     const [secondaryText, setSecondaryText] = useState('')
@@ -23,25 +24,40 @@ export default function CreateBanner() {
     const navigate = useNavigate()
 
     useEffect(() => {
-        setPageData({ title: 'Create Banner' })
-    }, [setPageData])
+        setPageData({ title: 'Edit Banner' })
 
-    const handleCreateBanner = () => {
+        const loadBanner = async () => {
+            if (!id) return
+            const banner = await BannerService.getBanner(id)
+            if (banner) {
+                setPrimaryText(banner.primaryText || '')
+                setSecondaryText(banner.secondaryText || '')
+                const theme = Object.keys(themeBackgrounds).find(
+                    (key) => themeBackgrounds[key] === banner.imageUrl
+                )
+                setSelectedTheme(theme || null)
+            }
+        }
+
+        loadBanner()
+    }, [id, setPageData])
+
+    const handleEditBanner = () => {
         if (!primaryText.trim() || !secondaryText.trim() || !selectedTheme) {
             setError('Please fill in all fields.')
             return
         }
 
-        const newBanner: BannerDto = {
-            id: Date.now().toString(),
+        const updatedBanner: BannerDto = {
+            id: id!,
             link: '',
             imageUrl: themeBackgrounds[selectedTheme],
-            primaryText: primaryText,
-            secondaryText: secondaryText,
+            primaryText,
+            secondaryText,
         }
 
-        BannerService.createBanner(newBanner)
-        setError(null)
+        BannerService.updateBanner(id!, updatedBanner)
+        props.onBannerUpdated?.()
         navigate('/banners')
     }
 
@@ -102,7 +118,7 @@ export default function CreateBanner() {
                     <Textarea
                         placeholder="Secondary Text"
                         sx={{ width: '100%' }}
-                        value={secondaryText}
+                        value={secondaryText ?? ''}
                         onChange={(e) => setSecondaryText(e.target.value)}
                         required
                     />
@@ -122,6 +138,7 @@ export default function CreateBanner() {
                 <Select
                     sx={{ maxWidth: 150 }}
                     placeholder="Theme.."
+                    value={selectedTheme || ''}
                     onChange={(_, value) => setSelectedTheme(value)}
                     required
                 >
@@ -134,9 +151,9 @@ export default function CreateBanner() {
                     size="md"
                     color="primary"
                     sx={{ fontWeight: 600 }}
-                    onClick={handleCreateBanner}
+                    onClick={handleEditBanner}
                 >
-                    Create
+                    Save
                 </Button>
                 <Button
                     variant="outlined"

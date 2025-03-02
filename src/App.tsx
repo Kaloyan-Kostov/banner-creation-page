@@ -6,6 +6,7 @@ import Banners from './pages/banners/Banners.tsx'
 import { PageDataProvider } from './context/page-data/PageDataProvider.tsx'
 import Banner from './pages/banners/Banner.tsx'
 import CreateBanner from './pages/banners/CreateBanner.tsx'
+import EditBanner from './pages/banners/EditBanner.tsx'
 
 export default function App() {
     return (
@@ -30,6 +31,11 @@ export default function App() {
                                 path="banners/create"
                                 element={<CreateBanner />}
                             />
+                            <Route
+                                path="banners/edit/:id"
+                                element={<EditBanner />}
+                            />
+
                             {/*<Route path="contact" element={<Contact />} />*/}
                             <Route
                                 path="*"
