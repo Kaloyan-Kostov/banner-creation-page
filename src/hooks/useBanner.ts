@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react'
 import { usePageData } from '../context/page-data/page-data.context'
 
 export const themeBackgrounds: Record<string, string> = {
-    red: '/src/assets/banner.svg',
-    cyan: '/src/assets/banner2.svg',
-    purple: '/src/assets/banner3.svg',
+    red: '/src/assets/red.svg',
+    cyan: '/src/assets/cyan.svg',
+    purple: '/src/assets/purple.svg',
 }
 
 export function useBanner(initialTitle: string) {

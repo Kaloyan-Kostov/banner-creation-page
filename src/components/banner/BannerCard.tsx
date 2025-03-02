@@ -8,14 +8,27 @@ import Image from '../Image.tsx'
 import BannerService from '../../services/banner.service.ts'
 import { useState } from 'react'
 import ConfirmModal from '../ConfirmModal.tsx'
+import { themeColors } from '../../pages/banners/BannerForm.tsx'
 
 export default function BannerCard(props: { banner?: BannerDto; delete?: () => void }) {
     const navigate = useNavigate()
     const [openConfirm, setOpenConfirm] = useState(false)
+
     const textData = {
         primaryText: props.banner?.primaryText || '',
         secondaryText: props.banner?.secondaryText || '',
     }
+
+    const contentColorSetter = (imageUrl?: string): string | null => {
+        if (!imageUrl) return null
+        if (imageUrl.includes('red')) return 'red'
+        if (imageUrl.includes('cyan')) return 'cyan'
+        if (imageUrl.includes('purple')) return 'purple'
+        return null
+    }
+
+    const theme = contentColorSetter(props.banner?.imageUrl)
+    const textColor = theme ? themeColors[theme] : 'gray'
 
     const handleDeleteBanner = (id: string) => {
         BannerService.deleteBanner(id)
@@ -51,7 +64,7 @@ export default function BannerCard(props: { banner?: BannerDto; delete?: () => v
                 >
                     <Typography
                         level="title-lg"
-                        sx={{ wordWrap: 'break-word' }}
+                        sx={{ wordWrap: 'break-word', color: '#fff' }}
                     >
                         <Skeleton
                             loading={!props.banner}
@@ -62,7 +75,13 @@ export default function BannerCard(props: { banner?: BannerDto; delete?: () => v
                     </Typography>
                     <Typography
                         level="body-sm"
-                        sx={{ px: 7, wordWrap: 'break-word', fontSize: '0.8rem' }}
+                        sx={{
+                            px: 7,
+                            wordWrap: 'break-word',
+                            fontSize: '0.8rem',
+                            color: textColor,
+                            fontStyle: 'oblique',
+                        }}
                     >
                         <Skeleton
                             loading={!props.banner}
@@ -75,6 +94,7 @@ export default function BannerCard(props: { banner?: BannerDto; delete?: () => v
                 <CardActions>
                     <IconButton
                         variant="outlined"
+                        color="danger"
                         size="sm"
                         sx={{ width: '20%', alignSelf: 'center' }}
                         onClick={() => setOpenConfirm(true)}
@@ -98,7 +118,7 @@ export default function BannerCard(props: { banner?: BannerDto; delete?: () => v
                 onClose={() => setOpenConfirm(false)}
                 action="delete this banner"
                 confirm={() => {
-                    handleDeleteBanner()
+                    handleDeleteBanner(props.banner!.id!)
                     setOpenConfirm(false)
                 }}
             />
