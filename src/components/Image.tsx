@@ -25,15 +25,7 @@ export default function Image(props: { url?: string }) {
     }, [imageSrc])
 
     return (
-        <Box
-            sx={{
-                width: '100%',
-                height: '100%',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-            }}
-        >
+        <Box sx={{ width: 300, height: 500, position: 'relative' }}>
             <Skeleton
                 loading={!isLoaded}
                 variant="overlay"
